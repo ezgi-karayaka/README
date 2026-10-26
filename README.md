@@ -1,2 +1,2 @@
-# README
-This is a README.md resitory for my coding projects.
+MBTI-PIXEL-FOCUS-ROOM
+This is a focusing website for you.
