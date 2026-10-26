@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MBTI Cozy Pixel Focus Room</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #090a10;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    header {
+      width: 100%;
+      max-width: 680px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 12px 18px;
+      border-radius: 16px;
+      margin-bottom: 16px;
+      backdrop-filter: blur(8px);
+    }
+
+    .group-badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 8px;
+      border-radius: 6px;
+      margin-bottom: 4px;
+      display: inline-block;
+      text-transform: uppercase;
+    }
+
+    select {
+      background: #151824;
+      color: #fff;
+      border: 2px solid #3b82f6;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    optgroup { background: #0f111a; color: #94a3b8; }
+
+    #coinDisplay {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 12px;
+      color: #fbbf24;
+      background: rgba(251, 191, 36, 0.1);
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+
+    /* --- COZY PIXEL ODA DÜNYASI --- */
+    #roomContainer {
+      width: 100%;
+      max-width: 680px;
+      height: 380px;
+      border-radius: 24px;
+      position: relative;
+      background: #1e1b2e;
+      border: 4px solid #2d2b45;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: filter 0.5s ease;
+    }
+
+    /* Arka Duvar & Pencere */
+    .room-wall {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60%;
+      background: #252238;
+      border-bottom: 6px solid #181625;
+      transition: background 0.6s ease;
+    }
+
+    .pixel-window {
+      position: absolute;
+      top: 25px;
+      left: 40px;
+      width: 70px;
+      height: 85px;
+      background: #38bdf8;
+      border: 4px solid #475569;
+      box-shadow: inset 0 0 15px rgba(255,255,255,0.6);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 3px;
+      padding: 3px;
+    }
+    .pixel-window div { background: rgba(255,255,255,0.2); }
+
+    /* Ahşap Parke Zemin & Halı */
+    .room-floor {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 40%;
+      background: repeating-linear-gradient(
+        90deg,
+        #78350f,
+        #78350f 40px,
+        #652b09 40px,
+        #652b09 44px
+      );
+    }
+
+    .pixel-rug {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 280px;
+      height: 90px;
+      background: #475569;
+      border-radius: 45px;
+      border: 4px dashed rgba(255,255,255,0.2);
+    }
+
+    /* Çalışma Masası ve Sahne */
+    .desk-area {
+      position: absolute;
+      bottom: 45px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 10;
+    }
+
+    #pixelStage {
+      width: 130px;
+      height: 130px;
+      image-rendering: pixelated;
+      transition: transform 0.3s ease;
+    }
+
+    /* ODAKLANMA ANİMASYONLARI (Aktifken çalışır) */
+    .focusing #pixelStage {
+      animation: studyingMotion 1.8s ease-in-out infinite;
+    }
+
+    @keyframes studyingMotion {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      30% { transform: translateY(-4px) rotate(-1deg); }
+      70% { transform: translateY(-2px) rotate(1deg); }
+    }
+
+    /* Piksel Çalışma Masası */
+    .pixel-desk {
+      width: 180px;
+      height: 35px;
+      background: #92400e;
+      border-top: 5px solid #b45309;
+      border-radius: 4px;
+      margin-top: -15px;
+      position: relative;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 10px;
+    }
+    .desk-leg-left, .desk-leg-right {
+      position: absolute;
+      bottom: -35px;
+      width: 8px;
+      height: 35px;
+      background: #78350f;
+    }
+    .desk-leg-left { left: 15px; }
+    .desk-leg-right { right: 15px; }
+
+    /* Odaya Alınan Eşyalar (Dekorasyon Alanı) */
+    #decorationsArea {
+      position: absolute;
+      bottom: 25px;
+      width: 90%;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+      z-index: 15;
+      padding: 0 20px;
+      font-size: 26px;
+    }
+
+    /* Eylem Durum Rozeti */
+    #characterAction {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(15, 17, 26, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 8px 14px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 800;
+      max-width: 250px;
+      text-align: right;
+      z-index: 20;
+      backdrop-filter: blur(6px);
+      transition: all 0.3s;
+    }
+
+    /* SAYAC VE KONTROLLER */
+    #timerSection {
+      margin-top: 18px;
+      text-align: center;
+    }
+
+    #timerDisplay {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 38px;
+      color: #38bdf8;
+      margin-bottom: 12px;
+      text-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+    }
+
+    .btn-group { display: flex; gap: 10px; justify-content: center; }
+
+    button {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.15s transform;
+    }
+    button:hover { transform: translateY(-2px); }
+
+    #btnStart { background: #10b981; color: #042f2e; }
+    #btnReset { background: #ef4444; color: #fff; }
+
+    /* MAĞAZA */
+    #shopSection {
+      width: 100%;
+      max-width: 680px;
+      margin-top: 18px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 14px;
+      border-radius: 16px;
+      text-align: center;
+    }
+    #shopSection h3 { font-size: 12px; margin-bottom: 10px; color: #fbbf24; font-family: 'Press Start 2P', monospace; }
+    .shop-items { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .shop-item { background: #1c1f2e; color: #cbd5e1; font-size: 13px; border: 1px solid #334155; }
+    .shop-item:hover { background: #2d334d; color: #fff; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div>
+      <div id="groupBadge" class="group-badge">Analist</div>
+      <br>
+      <select id="mbtiSelect">
+        <optgroup label="🧠 Analistler (_NT_)">
+          <option value="INTJ">INTJ - Mimar</option>
+          <option value="INTP">INTP - Mantıkçı</option>
+          <option value="ENTJ">ENTJ - Komutan</option>
+          <option value="ENTP" selected>ENTP - Vizyoner</option>
+        </optgroup>
+        <optgroup label="🌿 Diplomatlar (_NF_)">
+          <option value="INFJ">INFJ - Danışman</option>
+          <option value="INFP">INFP - Hayalperest</option>
+          <option value="ENFJ">ENFJ - Önder</option>
+          <option value="ENFP">ENFP - Şampiyon</option>
+        </optgroup>
+        <optgroup label="🛡️ Nöbetçiler (_S_J)">
+          <option value="ISTJ">ISTJ - Müfettiş</option>
+          <option value="ISFJ">ISFJ - Savunucu</option>
+          <option value="ESTJ">ESTJ - Yönetici</option>
+          <option value="ESFJ">ESFJ - Konsül</option>
+        </optgroup>
+        <optgroup label="⚡ Kâşifler (_S_P)">
+          <option value="ISTP">ISTP - Becerikli</option>
+          <option value="ISFP">ISFP - Maceracı</option>
+          <option value="ESTP">ESTP - Girişimci</option>
+          <option value="ESFP">ESFP - Eğlendirici</option>
+        </optgroup>
+      </select>
+    </div>
+    <div id="coinDisplay">🪙 0</div>
+  </header>
+
+  <!-- GERÇEK PİKSEL ODA GÖRÜNÜMÜ -->
+  <main id="roomContainer">
+    <div class="room-wall" id="roomWall">
+      <div class="pixel-window">
+        <div></div><div></div><div></div><div></div>
+      </div>
+    </div>
+    
+    <div class="room-floor">
+      <div class="pixel-rug" id="pixelRug"></div>
+    </div>
+
+    <!-- Karakter & Çalışma Masası -->
+    <div class="desk-area">
+      <div id="pixelStage"></div>
+      <div class="pixel-desk">
+        <div class="desk-leg-left"></div>
+        <div class="desk-leg-right"></div>
+        <span id="deskItem1">☕</span>
+        <span id="deskItem2">📖</span>
+      </div>
+    </div>
+
+    <!-- Odaya Satın Alınan Eşyalar (Sol & Sağ Köşeler) -->
+    <div id="decorationsArea">
+      <div id="decorLeft"></div>
+      <div id="decorRight"></div>
+    </div>
+
+    <div id="characterAction">Dinleniyor... Başlamak için 'Odaklan'a tıkla!</div>
+  </main>
+
+  <section id="timerSection">
+    <div id="timerDisplay">25:00</div>
+    <div class="btn-group">
+      <button id="btnStart">Odaklanmaya Başla 🔥</button>
+      <button id="btnReset">Sıfırla 🔄</button>
+    </div>
+  </section>
+
+  <section id="shopSection">
+    <h3>ODA MAĞAZASI</h3>
+    <div class="shop-items">
+      <button class="shop-item" onclick="buyItem('🪴 Sukulent', 30)">🪴 Sukulent (30 🪙)</button>
+      <button class="shop-item" onclick="buyItem('🏮 Lamba', 60)">🏮 Lamba (60 🪙)</button>
+      <button class="shop-item" onclick="buyItem('🐈 Uyuyan Kedi', 90)">🐈 Kedi (90 🪙)</button>
+      <button class="shop-item" onclick="buyItem('📚 Kitaplık', 150)">📚 Kitaplık (150 🪙)</button>
+    </div>
+  </section>
+
+  <script>
+    // Dinlenme ve Odaklanma için SVG Karakter Modelleri
+    const AVATARS = {
+      ENTP: {
+        idle: `
+          <svg viewBox="0 0 16 16" width="100%" height="100%">
+            <rect x="7" y="2" width="6" height="3" fill="#78350f"/>
+            <rect x="8" y="5" width="5" height="4" fill="#ffd1b3"/>
+            <rect x="9" y="6" width="1" height="1" fill="#0f172a"/>
+            <rect x="12" y="6" width="1" height="1" fill="#0f172a"/>
+            <rect x="7" y="9" width="7" height="6" fill="#8b5cf6"/>
+          </svg>
+        `,
+        focus: `
+          <svg viewBox="0 0 16 16" width="100%" height="100%">
+            <!-- Arkadaki Tahta & Çizgiler -->
+            <rect x="1" y="1" width="6" height="6" fill="#f8fafc"/>
+            <rect x="2" y="2" width="4" height="1" fill="#ef4444"/>
+            <rect x="3" y="4" width="3" height="2" fill="#0284c7"/>
+            <!-- Eğilmiş Çizen ENTP -->
+            <rect x="7" y="2" width="6" height="3" fill="#78350f"/>
+            <rect x="8" y="5" width="5" height="4" fill="#ffd1b3"/>
+            <rect x="9" y="6" width="1" height="1" fill="#0f172a"/>
+            <rect x="12" y="6" width="1" height="1" fill="#0f172a"/>
+            <rect x="10" y="8" width="2" height="1" fill="#ef4444"/>
+            <rect x="7" y="9" width="7" height="6" fill="#8b5cf6"/>
+            <!-- Tebeşir Tutan Kol -->
+            <rect x="5" y="6" width="3" height="2" fill="#ffd1b3"/>
+            <rect x="4" y="6" width="1" height="1" fill="#38bdf8"/>
+          </svg>
+        `
+      },
+      INFP: {
+        idle: `
+          <svg viewBox="0 0 16 16" width="100%" height="100%">
+            <rect x="4" y="2" width="8" height="4" fill="#86efac"/>
+            <rect x="5" y="5" width="6" height="4" fill="#ffd1b3"/>
+            <rect x="6" y="6" width="1" height="1" fill="#14532d"/>
+            <rect x="9" y="6" width="1" height="1" fill="#14532d"/>
+            <rect x="4" y="9" width="8" height="5" fill="#a7f3d0"/>
+          </svg>
+        `,
+        focus: `
+          <svg viewBox="0 0 16 16" width="100%" height="100%">
+            <rect x="4" y="2" width="8" height="4" fill="#86efac"/>
+            <rect x="5" y="5" width="6" height="4" fill="#ffd1b3"/>
+            <!-- Başını Kitaba Eğmiş Gözler -->
+            <rect x="6" y="7" width="1" height="1" fill="#14532d"/>
+            <rect x="9" y="7" width="1" height="1" fill="#14532d"/>
+            <rect x="4" y="9" width="8" height="5" fill="#a7f3d0"/>
+            <!-- Açık Sayfaları Çevrilen Kitap -->
+            <rect x="5" y="11" width="3" height="3" fill="#fde047"/>
+            <rect x="8" y="11" width="3" height="3" fill="#fde047"/>
+            <rect x="7" y="11" width="2" height="3" fill="#fff"/>
+          </svg>
+        `
+      },
+      INFJ: {
+        idle: `
+          <svg viewBox="0 0 16 16" width="100%" height="100%">
+            <rect x="4" y="2" width="8" height="3" fill="#334155"/>
+            <rect x="5" y="5" width="6" height="4" fill="#ffd1b3"/>
+            <rect x="6" y="6" width="1" height="1" fill="#0f172a"/>
+            <rect x="9" y="6" width="1" height="1" fill="#0f172a"/>
+            <rect x="4" y="9" width="8" height="5" fill="#059669"/>
+          </svg>
+        `,
+        focus: `
+          <svg viewBox="0 0 16 16" width="100%" height="100%">
+            <rect x="4" y="2" width="8" height="3" fill="#334155"/>
+            <rect x="5" y="5" width="6" height="4" fill="#ffd1b3"/>
+            <rect x="6" y="6" width="1" height="1" fill="#0f172a"/>
+            <rect x="9" y="6" width="1" height="1" fill="#0f172a"/>
+            <rect x="4" y="9" width="8" height="5" fill="#059669"/>
+            <!-- Kucağında Mırıldayan Kedi ve Seven Kol -->
+            <rect x="6" y="11" width="4" height="3" fill="#f97316"/>
+            <rect x="5" y="10" width="1" height="1" fill="#f97316"/>
+            <rect x="10" y="10" width="1" height="1" fill="#f97316"/>
+            <rect x="5" y="11" width="2" height="1" fill="#ffd1b3"/>
+          </svg>
+        `
+      },
+      INTJ: {
+        idle: `
+          <svg viewBox="0 0 16 16" width="100%" height="100%">
+            <rect x="5" y="2" width="6" height="3" fill="#0f172a"/>
+            <rect x="5" y="5" width="6" height="4" fill="#fed7aa"/>
+            <rect x="6" y="6" width="1" height="1" fill="#0f172a"/>
+            <rect x="9" y="6" width="1" height="1" fill="#0f172a"/>
+            <rect x="4" y="9" width="8" height="6" fill="#334155"/>
+          </svg>
+        `,
+        focus: `
+          <svg viewBox="0 0 16 16" width="100%" height="100%">
+            <rect x="5" y="2" width="6" height="3" fill="#0f172a"/>
+            <rect x="5" y="5" width="6" height="4" fill="#fed7aa"/>
+            <rect x="6" y="7" width="1" height="1" fill="#0f172a"/>
+            <rect x="9" y="7" width="1" height="1" fill="#0f172a"/>
+            <rect x="4" y="9" width="8" height="6" fill="#334155"/>
+            <!-- Satranç Şahı Hamlesi -->
+            <rect x="7" y="11" width="2" height="4" fill="#f8fafc"/>
+            <rect x="5" y="12" width="3" height="1" fill="#fed7aa"/>
+          </svg>
+        `
+      }
+    };
+
+    // Diğer tipler için şimdilik temel modelleri eşleştirelim
+    const DEFAULT_IDLE = AVATARS.INTJ.idle;
+    const DEFAULT_FOCUS = AVATARS.INFP.focus;
+
+    const MBTI_CONFIG = {
+      ENTP: { group: "Analist", groupColor: "#a855f7", idle: "☕ Masasında dinleniyor...", focus: "🧠 Fikir tahtasına teoriler karalıyor!", wallColor: "#2c1c3f", rugColor: "#581c87" },
+      INTJ: { group: "Analist", groupColor: "#a855f7", idle: "♟️ Sakince düşünüyor...", focus: "♟️ Satranç hamlelerini analiz ediyor!", wallColor: "#1e1e38", rugColor: "#312e81" },
+      INTP: { group: "Analist", groupColor: "#a855f7", idle: "💻 Masasında oturuyor...", focus: "💻 Ekranda kodları ve teorileri inceliyor!", wallColor: "#221c35", rugColor: "#4c1d95" },
+      ENTJ: { group: "Analist", groupColor: "#a855f7", idle: "📊 Notlarını inceliyor...", focus: "📊 Stratejik planı eksiksiz inşa ediyor!", wallColor: "#2b1c35", rugColor: "#3b0764" },
+      
+      INFJ: { group: "Diplomat", groupColor: "#10b981", idle: "🌿 Çayını yudumluyor...", focus: "🐱 Kedisini okşayıp derinleşiyor!", wallColor: "#132e27", rugColor: "#064e3b" },
+      INFP: { group: "Diplomat", groupColor: "#10b981", idle: "🌸 Pencereden bakıyor...", focus: "📖 Masal kitabını ilgiyle okuyor!", wallColor: "#14302b", rugColor: "#044343" },
+      ENFJ: { group: "Diplomat", groupColor: "#10b981", idle: "✨ Defterini açıyor...", focus: "📝 İlham manifestosunu coşkuyla yazıyor!", wallColor: "#16382f", rugColor: "#065f46" },
+      ENFP: { group: "Diplomat", groupColor: "#10b981", idle: "🎨 Renklere bakıyor...", focus: "⚡ Defterine kıvılcımlar saçıyor!", wallColor: "#13352c", rugColor: "#047857" },
+
+      ISTJ: { group: "Nöbetçi", groupColor: "#0284c7", idle: "📁 Dosyalarını hizalıyor...", focus: "📋 Günlük görevleri teker teker bitiriyor!", wallColor: "#122a3b", rugColor: "#0c4a6e" },
+      ISFJ: { group: "Nöbetçi", groupColor: "#0284c7", idle: "🍵 Fincanını tutuyor...", focus: "💌 Ajandasında planlarını düzenliyor!", wallColor: "#132f42", rugColor: "#075985" },
+      ESTJ: { group: "Nöbetçi", groupColor: "#0284c7", idle: "📎 Listesine bakıyor...", focus: "📊 Maddeleri yeşile boyuyor!", wallColor: "#102638", rugColor: "#0369a1" },
+      ESFJ: { group: "Nöbetçi", groupColor: "#0284c7", idle: "🪑 Masasını siliyor...", focus: "🗓️ Takvimi kusursuzca planlıyor!", wallColor: "#142d3e", rugColor: "#0284c7" },
+
+      ISTP: { group: "Kâşif", groupColor: "#f59e0b", idle: "🔧 Aletlerine bakıyor...", focus: "⚙️ Mekanik dişlileri monte ediyor!", wallColor: "#3b2614", rugColor: "#78350f" },
+      ISFP: { group: "Kâşif", groupColor: "#f59e0b", idle: "🖌️ Fırçasını tutuyor...", focus: "🎨 Tuvaldeki renkleri harmanlıyor!", wallColor: "#3d2915", rugColor: "#854d0e" },
+      ESTP: { group: "Kâşif", groupColor: "#f59e0b", idle: "⏱️ Sayaca bakıyor...", focus: "⚡ Aksiyon planını hızla yazıyor!", wallColor: "#422311", rugColor: "#9a3412" },
+      ESFP: { group: "Kâşif", groupColor: "#f59e0b", idle: "🎶 Ritmi dinliyor...", focus: "🎵 Müzik eşliğinde işini tamamlıyor!", wallColor: "#452912", rugColor: "#b45309" }
+    };
+
+    // ELEMENTLER
+    const mbtiSelect = document.getElementById('mbtiSelect');
+    const groupBadge = document.getElementById('groupBadge');
+    const pixelStage = document.getElementById('pixelStage');
+    const characterAction = document.getElementById('characterAction');
+    const roomContainer = document.getElementById('roomContainer');
+    const roomWall = document.getElementById('roomWall');
+    const pixelRug = document.getElementById('pixelRug');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const btnStart = document.getElementById('btnStart');
+    const btnReset = document.getElementById('btnReset');
+    const coinDisplay = document.getElementById('coinDisplay');
+    const decorLeft = document.getElementById('decorLeft');
+    const decorRight = document.getElementById('decorRight');
+
+    // DEĞİŞKENLER
+    let coins = parseInt(localStorage.getItem('mbti_focus_coins')) || 0;
+    let inventory = JSON.parse(localStorage.getItem('mbti_focus_inventory')) || [];
+    let savedMbti = localStorage.getItem('mbti_focus_selected') || 'ENTP';
+    
+    let timer = null;
+    let timeLeft = 25 * 60;
+    let isRunning = false;
+
+    mbtiSelect.value = savedMbti;
+
+    function renderDecorations() {
+      coinDisplay.textContent = `🪙 ${coins}`;
+      decorLeft.innerHTML = inventory.slice(0, 2).join(' ');
+      decorRight.innerHTML = inventory.slice(2).join(' ');
+    }
+
+    function updateRoom() {
+      const selected = mbtiSelect.value;
+      localStorage.setItem('mbti_focus_selected', selected);
+      
+      const config = MBTI_CONFIG[selected];
+      groupBadge.textContent = config.group;
+      groupBadge.style.background = config.groupColor;
+      
+      roomWall.style.background = config.wallColor;
+      pixelRug.style.background = config.rugColor;
+
+      // Karakter Durumu (Idle vs Focus)
+      const currentAvatars = AVATARS[selected] || { idle: DEFAULT_IDLE, focus: DEFAULT_FOCUS };
+      
+      if (isRunning) {
+        pixelStage.innerHTML = currentAvatars.focus;
+        characterAction.textContent = config.focus;
+        roomContainer.classList.add('focusing');
+      } else {
+        pixelStage.innerHTML = currentAvatars.idle;
+        characterAction.textContent = config.idle;
+        roomContainer.classList.remove('focusing');
+      }
+    }
+
+    mbtiSelect.addEventListener('change', updateRoom);
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+      const secs = (timeLeft % 60).toString().padStart(2, '0');
+      timerDisplay.textContent = `${mins}:${secs}`;
+    }
+
+    // SAYAC BUTONLARI
+    btnStart.addEventListener('click', () => {
+      if (isRunning) {
+        clearInterval(timer);
+        isRunning = false;
+        btnStart.textContent = "Devam Et ▶️";
+        updateRoom();
+      } else {
+        isRunning = true;
+        btnStart.textContent = "Durdur ⏸️";
+        updateRoom();
+        
+        timer = setInterval(() => {
+          if (timeLeft > 0) {
+            timeLeft--;
+            updateTimerDisplay();
+          } else {
+            clearInterval(timer);
+            isRunning = false;
+            coins += 50;
+            localStorage.setItem('mbti_focus_coins', coins);
+            renderDecorations();
+            alert("Harika! 25 dakikalık odaklanma bitti, 50 Altın kazandın! 🪙");
+            timeLeft = 25 * 60;
+            updateTimerDisplay();
+            btnStart.textContent = "Odaklanmaya Başla 🔥";
+            updateRoom();
+          }
+        }, 1000);
+      }
+    });
+
+    btnReset.addEventListener('click', () => {
+      clearInterval(timer);
+      isRunning = false;
+      timeLeft = 25 * 60;
+      updateTimerDisplay();
+      btnStart.textContent = "Odaklanmaya Başla 🔥";
+      updateRoom();
+    });
+
+    // MAĞAZA
+    window.buyItem = (name, price) => {
+      if (coins >= price) {
+        coins -= price;
+        const icon = name.split(' ')[0];
+        inventory.push(icon);
+        localStorage.setItem('mbti_focus_coins', coins);
+        localStorage.setItem('mbti_focus_inventory', JSON.stringify(inventory));
+        renderDecorations();
+      } else {
+        alert("Yetersiz altın! Biraz daha odaklanmalısın ⏳");
+      }
+    };
+
+    // İlk Başlatma
+    updateRoom();
+    renderDecorations();
+    updateTimerDisplay();
+  </script>
+</body>
+</html>
